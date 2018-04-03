@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="jquery.min.js"></script>
+    <script src="jquery.flot.min.js"></script>
+    <script src="excanvas.min.js"></script>
+</head>
+<body>
+
+<!--<button id="subscribe-button">Get latest</button>-->
+<!--<ul id="display"></ul>-->
+
+
+<div style="text-align: center">
+    <h1>
+        Trade Price: <span id="priceHolder"></span>
+    </h1>
+    <div id="placeholder" style="width: 600px; height: 300px; margin: 0 auto">
+    </div>
+</div>
+<script type="text/javascript">
+    //flot chart start here
+    $(function () {
+
+        if (!!window.EventSource) {
+            var source = new EventSource('/rest/employees/events');
+            source.addEventListener('message', function (e) {
+                var object = JSON.parse(e.data);
+                console.log(object);
+                update(parseInt(object.price, 10));
+            }, false);
+
+            source.addEventListener('open', function (e) {
+                console.log("open!");
+            }, false);
+
+            source.addEventListener('error', function (e) {
+                if (e.readyState == EventSource.CLOSED) {
+                    console.log("error!");
+                }
+            }, false);
+
+        } else {
+            // not supported!
+        }
+        var ypt = [], totalPoints = 25;
+
+        function initData() {
+            for (var i = 0; i < totalPoints; ++i)
+                ypt.push(0);
+            return getPoints();
+
+        }
+        function getData(data) {
+            if (ypt.length > 0)
+                ypt = ypt.slice(1);
+            ypt.push(data);
+            return getPoints();
+        }
+        function getPoints() {
+            var ret = [];
+            for (var i = 0; i < ypt.length; ++i)
+                ret.push([i, ypt[i]]);
+            return ret;
+        }
+
+        // setup plot
+        var options = {
+            series: { shadowSize: 0, bars: {
+                show: true,
+                barWidth: 0.75,
+                fill: 1
+            }
+            }, // drawing is faster without shadows
+            yaxis: { min: 0, max: 100,
+                tickFormatter: function (val, axis) {
+                    return '$' + val;
+                }
+            },
+            xaxis: { show: false }
+        };
+
+        var plot = $.plot($("#placeholder"), [initData()], options);
+        function update(data) {
+            $('#priceHolder').text('$' + data);
+            plot.setData([getData(data)]);
+            plot.draw();
+        }
+    });
+</script>
+
+<script>
+    addEvent('click',document.getElementById('subscribe-button'),function () {
+        registerEventSourceAndAddResponose('/rest/employees/events',"display");
+    });
+
+    function registerEventSourceAndAddResponose(uri,elementId) {
+        var stringEvents = document.getElementById(elementId);
+        var stringEventSource = new EventSource(uri);
+        stringEventSource.onmessage = function (e) {
+            var newElement = document.createElement('li');
+            newElement.innerHTML = e.data;
+            stringEvents.appendChild(newElement);
+
+        }
+
+    }
+    function  addEvent(evnt,elem,func) {
+        if(typeof (EventSource)!=='undefined')
+        {
+            elem.addEventListener(evnt,func,false);
+        }
+        else
+        {
+            elem[evnt] = func;
+        }
+
+    }
+</script>
+
+</body>
+</html>
