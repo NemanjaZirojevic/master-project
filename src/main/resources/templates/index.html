@@ -3,9 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
-    <script src="jquery.min.js"></script>
-    <script src="jquery.flot.min.js"></script>
-    <script src="excanvas.min.js"></script>
+    <!--<script src="jquery.min.js"></script>-->
+    <!--<script src="jquery.flot.min.js"></script>-->
+    <!--<script src="excanvas.min.js"></script>-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/flot/0.8.3/jquery.flot.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/flot/0.8.3/jquery.flot.resize.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/flot/0.8.3/jquery.flot.pie.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/flot/0.8.3/jquery.flot.categories.min.js"></script>
+
 </head>
 <body>
 
@@ -17,35 +23,89 @@
     <h1>
         Trade Price: <span id="priceHolder"></span>
     </h1>
-    <div id="placeholder" style="width: 600px; height: 300px; margin: 0 auto">
-    </div>
+    <div id="placeholder" style="width: 100%; height: 300px; margin: 0 auto"></div>
+
+    <button id="addLine">Add line</button>
 </div>
+
+
+
 <script type="text/javascript">
     //flot chart start here
     $(function () {
 
-        if (!!window.EventSource) {
+        var optionsChanged = false;
+        var plot;
+
+        var options = {
+            grid: {
+                borderColor: "#f3f3f3",
+                borderWidth: 1,
+                hoverable: true,
+                backgroundColor: '#fcfcfc',
+                tickColor: "#f3f3f3",
+
+            },
+            series: {
+                shadowSize: 0, // Drawing is faster without shadows
+                color: "#3c8dbc"
+            },
+            lines: {
+                fill: true, //Converts the line chart to area chart
+                color: "#3c8dbc"
+            },
+            yaxis: {
+                min: 0,
+                max: 100,
+                show: true
+            },
+            xaxis: {
+                show: true
+            }
+        };
+
+
+
+        if (!!window.EventSource)
+        {
             var source = new EventSource('/rest/employees/events');
-            source.addEventListener('message', function (e) {
-                var object = JSON.parse(e.data);
-                console.log(object);
-                update(parseInt(object.price, 10));
+            source.addEventListener('message', function (e)
+            {
+                if(!optionsChanged) {
+                    var object = JSON.parse(e.data);
+                    update(parseInt(object.price, 10));
+
+                }
+                else
+                {
+
+
+                    var options = plot.getOptions();
+                    options.grid.markings=[{ yaxis: { from: 80, to: 80 }, color: "#000000" }];
+                    plot.options = options;
+                    plot.setupGrid();
+                    plot.draw();
+                    var object = JSON.parse(e.data);
+//                    plot = $.plot($("#placeholder"), [parseInt(object.price, 10)], options);
+                    update(parseInt(object.price, 10));
+                }
+
+
+
             }, false);
 
             source.addEventListener('open', function (e) {
-                console.log("open!");
             }, false);
 
             source.addEventListener('error', function (e) {
                 if (e.readyState == EventSource.CLOSED) {
-                    console.log("error!");
                 }
             }, false);
 
         } else {
-            // not supported!
+
         }
-        var ypt = [], totalPoints = 25;
+        var ypt = [], totalPoints = 15;
 
         function initData() {
             for (var i = 0; i < totalPoints; ++i)
@@ -67,58 +127,32 @@
         }
 
         // setup plot
-        var options = {
-            series: { shadowSize: 0, bars: {
-                show: true,
-                barWidth: 0.75,
-                fill: 1
-            }
-            }, // drawing is faster without shadows
-            yaxis: { min: 0, max: 100,
-                tickFormatter: function (val, axis) {
-                    return '$' + val;
-                }
-            },
-            xaxis: { show: false }
-        };
 
-        var plot = $.plot($("#placeholder"), [initData()], options);
-        function update(data) {
+         plot = $.plot($("#placeholder"), [initData()], options);
+
+
+        function update(data)
+        {
             $('#priceHolder').text('$' + data);
             plot.setData([getData(data)]);
+            console.log(plot);
             plot.draw();
+
         }
+
+        var button = document.querySelector('#addLine');
+        button.addEventListener('click',function () {
+            optionsChanged = true;
+
+
+        });
+
+
     });
+
+
 </script>
 
-<script>
-    addEvent('click',document.getElementById('subscribe-button'),function () {
-        registerEventSourceAndAddResponose('/rest/employees/events',"display");
-    });
-
-    function registerEventSourceAndAddResponose(uri,elementId) {
-        var stringEvents = document.getElementById(elementId);
-        var stringEventSource = new EventSource(uri);
-        stringEventSource.onmessage = function (e) {
-            var newElement = document.createElement('li');
-            newElement.innerHTML = e.data;
-            stringEvents.appendChild(newElement);
-
-        }
-
-    }
-    function  addEvent(evnt,elem,func) {
-        if(typeof (EventSource)!=='undefined')
-        {
-            elem.addEventListener(evnt,func,false);
-        }
-        else
-        {
-            elem[evnt] = func;
-        }
-
-    }
-</script>
 
 </body>
 </html>

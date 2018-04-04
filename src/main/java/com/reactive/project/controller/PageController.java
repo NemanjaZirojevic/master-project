@@ -12,7 +12,7 @@ public class PageController {
     @RequestMapping(value = "/main",method = RequestMethod.GET)
     public ModelAndView displayMainPage()
     {
-        ModelAndView modelAndView = new ModelAndView("index");
+        ModelAndView modelAndView = new ModelAndView("main");
         return modelAndView;
 
     }

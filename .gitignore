@@ -12,14 +12,22 @@ target/
 
 ### IntelliJ IDEA ###
 .idea
+mongod.lock
+diagnostic.data
+journal
 *.iws
 *.iml
 *.ipr
+*.wt
+*.pdf
+*.docx
+*.lock
 
 ### NetBeans ###
-nbproject/private/
-build/
-nbbuild/
-dist/
-nbdist/
-.nb-gradle/
+             nbproject/private/
+             build/
+             nbbuild/
+             dist/
+             nbdist/
+             .nb-gradle/
+             data-mongodb/
