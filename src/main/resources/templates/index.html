@@ -68,12 +68,12 @@
 
         if (!!window.EventSource)
         {
-            var source = new EventSource('/rest/employees/events');
+            var source = new EventSource('/rest/stock/events/1');
             source.addEventListener('message', function (e)
             {
                 if(!optionsChanged) {
                     var object = JSON.parse(e.data);
-                    update(parseInt(object.price, 10));
+                    update(parseInt(object.stockPrice, 10));
 
                 }
                 else
@@ -87,7 +87,7 @@
                     plot.draw();
                     var object = JSON.parse(e.data);
 //                    plot = $.plot($("#placeholder"), [parseInt(object.price, 10)], options);
-                    update(parseInt(object.price, 10));
+                    update(parseInt(object.stockPrice, 10));
                 }
 
 

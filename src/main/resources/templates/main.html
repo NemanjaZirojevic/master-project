@@ -1,13 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 
-<head>
+<link>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <meta name="description" content="">
   <meta name="author" content="">
-  <title>SB Admin - Start Bootstrap Template</title>
+  <title>RAF berza</title>
+  <link rel="icon"  sizes="32x32" href="images/stock-exchange.ico"></link>
   <!-- Bootstrap core CSS-->
   <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
   <!-- Custom fonts for this template-->
@@ -16,29 +18,40 @@
   <link href="vendor/datatables/dataTables.bootstrap4.css" rel="stylesheet">
   <!-- Custom styles for this template-->
   <link href="css/sb-admin.css" rel="stylesheet">
+
 </head>
 
 <body class="fixed-nav sticky-footer bg-dark" id="page-top">
   <!-- Navigation-->
+  <div id="popup" style="left: 424.5px; position: absolute; top: 200px; z-index: 9999; opacity: 0; display: none;">
+    <span class="button b-close"><span>X</span></span>
+    If you can't get it up use<br><span class="logo">bPopup</span>
+  </div>
+
   <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top" id="mainNav">
-    <a class="navbar-brand" href="index.html">Start Bootstrap</a>
+    <a class="navbar-brand" href="#"><img src="images/logo.png" style="height: 40px"></a>
     <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarResponsive">
-      <ul class="navbar-nav navbar-sidenav" id="exampleAccordion">
+      <ul class="navbar-nav navbar-sidenav" id="exampleAccordion" >
 
         <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Components">
           <a class="nav-link nav-link-collapse collapsed" data-toggle="collapse" href="#collapseComponents" data-parent="#exampleAccordion">
-            <i class="fa fa-fw fa-wrench"></i>
-            <span class="nav-link-text">Components</span>
+            <span class="nav-link-text">Akcije</span>
           </a>
-          <ul class="sidenav-second-level collapse" id="collapseComponents">
-            <li>
-              <a href="navbar.html">Navbar</a>
+          <ul class="sidenav-second-level collapse" id="collapseComponents" style="text-align: center">
+            <li style="padding-bottom: 10px">
+              <button class="btn btn-primary" onclick="showStockPrice(1)">Google</button>
             </li>
-            <li>
-              <a href="cards.html">Cards</a>
+            <li style="padding-bottom: 10px">
+              <button class="btn btn-primary" onclick="showStockPrice(2)">Amazon</button>
+            </li>
+            <li style="padding-bottom: 10px">
+              <button class="btn btn-primary" onclick="showStockPrice(3)">Ebay</button>
+            </li>
+            <li style="padding-bottom: 10px">
+              <button class="btn btn-primary" onclick="showStockPrice(4)" >Yahoo</button>
             </li>
           </ul>
         </li>
@@ -47,13 +60,6 @@
   </nav>
   <div class="content-wrapper">
     <div class="container-fluid">
-      <!-- Breadcrumbs-->
-      <ol class="breadcrumb">
-        <li class="breadcrumb-item">
-          <a href="#">Dashboard</a>
-        </li>
-        <li class="breadcrumb-item active">My Dashboard</li>
-      </ol>
       <!-- Icon Cards-->
       <div class="row">
         <div class="col-xl-3 col-sm-6 mb-3">
@@ -79,7 +85,7 @@
                 <i class="fa fa-hourglass-1"></i>
               </div>
               <div class="mr-5">
-                <label for="input-time">Unesite vremenski period : </label>
+                <label for="input-time">Unesite vremenski period (u sekundama):</label>
                 <input id="input-time" class="form-control">
               </div>
             </div>
@@ -97,19 +103,20 @@
                 <input id="input-money" class="form-control">
               </div>
             </div>
-            <a class="card-footer text-white clearfix small z-1" href="#">
-              <button class="btn btn-primary">Ulozi</button>
-            </a>
+            <div class="card-footer text-white clearfix small z-1">
+              <button class="btn btn-primary" id="addLine">Uloži</button>
+            </div>
           </div>
         </div>
       </div>
       <!-- Area Chart Example-->
       <div class="card mb-3">
         <div class="card-header">
-          <i class="fa fa-area-chart"></i> Area Chart Example</div>
+          <i class="fa fa-area-chart"></i>
+          Grafikon vrednosti akcija : <label id="stockName" style="font-weight: bold"></label></div>
         <div class="card-body">
           <h1>
-            Trade Price: <span id="priceHolder"></span>
+            Vrednost akcija : <span id="priceHolder"></span>
           </h1>
           <div id="placeholder" style="width: 100%; height: 300px; margin: 0 auto"></div>
         </div>
@@ -120,7 +127,7 @@
     <footer class="sticky-footer">
       <div class="container">
         <div class="text-center">
-          <small>Copyright © Your Website 2018</small>
+          <small>Copyright © RAF 2018</small>
         </div>
       </div>
     </footer>
@@ -160,18 +167,26 @@
     <!-- Custom scripts for this page-->
     <script src="js/sb-admin-datatables.min.js"></script>
     <script src="js/sb-admin-charts.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/flot/0.8.3/jquery.flot.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/flot/0.8.3/jquery.flot.resize.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/flot/0.8.3/jquery.flot.pie.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/flot/0.8.3/jquery.flot.categories.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/flot/0.8.3/jquery.flot.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/flot/0.8.3/jquery.flot.resize.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/flot/0.8.3/jquery.flot.pie.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/flot/0.8.3/jquery.flot.categories.min.js"></script>
+
+
+
+
 
   <script type="text/javascript">
-      //flot chart start here
-      $(function () {
 
-          var optionsChanged = false;
+
+      function showStockPrice(id)
+      {
+          var optionsChanged = 0;
           var plot;
+          var count = 0;
+
+
 
           var options = {
               grid: {
@@ -201,46 +216,84 @@
           };
 
 
-
           if (!!window.EventSource)
           {
-              var source = new EventSource('/rest/employees/events');
-              source.addEventListener('message', function (e)
+
+              var source = new EventSource('/rest/stock/events/' + id);
+
+              switch(id)
               {
-                  if(!optionsChanged) {
-                      var object = JSON.parse(e.data);
-                      update(parseInt(object.price, 10));
-
-                  }
-                  else
+                  case 1 : {
+                      document.getElementById("stockName").textContent = "Google";
+                      break;
+                  };
+                  case 2 :{
+                      document.getElementById("stockName").textContent = "Amazon";
+                      break;
+                  };
+                  case 3 : {
+                      document.getElementById("stockName").textContent = "Ebay";
+                      break;
+                  };
+                  case 4 : {
+                      document.getElementById("stockName").textContent = "Yahoo";
+                      break;
+                  };
+                  default:
                   {
-
-
-                      var options = plot.getOptions();
-                      options.grid.markings=[{ yaxis: { from: 80, to: 80 }, color: "#000000" }];
-                      plot.options = options;
-                      plot.setupGrid();
-                      plot.draw();
-                      var object = JSON.parse(e.data);
-//                    plot = $.plot($("#placeholder"), [parseInt(object.price, 10)], options);
-                      update(parseInt(object.price, 10));
+                      break;
                   }
-
-
-
-              }, false);
-
-              source.addEventListener('open', function (e) {
-              }, false);
-
-              source.addEventListener('error', function (e) {
-                  if (e.readyState == EventSource.CLOSED) {
-                  }
-              }, false);
-
-          } else {
+              }
+              source.addEventListener('message', function (e)
+               {
+          if(optionsChanged==0)
+          {
+              var object = JSON.parse(e.data);
+              update(parseInt(object.stockPrice, 10));
 
           }
+          else if(optionsChanged==1)
+          {
+
+              var moneySum = $("#input-value").val();
+              var time = $("#input-time").val();
+              var options = plot.getOptions();
+              options.grid.markings=[{ yaxis: { from: moneySum, to: moneySum }, color: "#000000" }];
+              plot.options = options;
+              plot.setupGrid();
+              plot.draw();
+              var object = JSON.parse(e.data);
+              update(parseInt(object.stockPrice, 10));
+              var selectedPrice = parseInt(object.stockPrice, 10);
+              reset(selectedPrice,time);
+
+          }
+          if(optionsChanged==2)
+          {
+
+              var options = plot.getOptions();
+              options.grid.markings=[];
+              plot.options = options;
+              plot.setupGrid();
+              plot.draw();
+              var object = JSON.parse(e.data);
+              update(parseInt(object.stockPrice, 10));
+
+          }
+
+      }, false);
+
+          source.addEventListener('open', function (e) {
+          }, false);
+
+          source.addEventListener('error', function (e) {
+              if (e.readyState == EventSource.CLOSED) {
+              }
+          }, false);
+
+      } else {
+
+      }
           var ypt = [], totalPoints = 15;
 
           function initData() {
@@ -263,30 +316,60 @@
           }
 
           // setup plot
-
           plot = $.plot($("#placeholder"), [initData()], options);
+
+
 
 
           function update(data)
           {
+              count++;
+              console.log("Displaying count number : "+ count);
               $('#priceHolder').text('$' + data);
               plot.setData([getData(data)]);
-              console.log(plot);
               plot.draw();
+
 
           }
 
           var button = document.querySelector('#addLine');
           button.addEventListener('click',function () {
-              optionsChanged = true;
-
+              optionsChanged = 1;
+              count = 0;
 
           });
 
 
-      });
+          function reset(stockPrice,time)
+          {
 
+              var inputValue = $("#input-value").val().trim();
 
+              if(count == time)
+              {
+                  if (stockPrice < inputValue) {
+                      console.log("You lose");
+                      var moneyInput = $("#input-money").val().trim();
+                      var newAmount = moneyInput - ( moneyInput * 90)/100;
+                      $("#input-money").val(parseInt(newAmount));
+                      optionsChanged = 2;
+                      count = 0;
+                  }
+                  if (stockPrice >= inputValue)
+                  {
+                      console.log("You won");
+                      var moneyInput = $("#input-money").val().trim();
+                      var newAmount = Number(moneyInput) + Number(( moneyInput * 90)/100);
+                      console.log("New amount :"+newAmount);
+                      $("#input-money").val(parseInt(newAmount));
+                      optionsChanged = 2;
+                      count = 0;
+                  }
+
+              }
+
+          }
+      };
   </script>
 
   </div>

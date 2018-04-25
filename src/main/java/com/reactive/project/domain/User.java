@@ -1,18 +1,16 @@
-package com.reactive.project.users;
+package com.reactive.project.domain;
 
 
 
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
+import javax.persistence.Id;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.stream.Collectors;
 import javax.persistence.*;
-import java.util.Collection;
 
 @Entity
 @Table(uniqueConstraints = @UniqueConstraint(columnNames = "email"))
@@ -79,11 +77,43 @@ public class User implements UserDetails{
             this.email = email;
         }
 
-        public String getPassword() {
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return roles.stream()
+                .map(role -> new SimpleGrantedAuthority(role.getName()))
+                .collect(Collectors.toList());
+    }
+
+    public String getPassword() {
             return password;
         }
 
-        public void setPassword(String password) {
+    @Override
+    public String getUsername() {
+        return email;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
+
+    public void setPassword(String password) {
             this.password = password;
         }
 
@@ -106,5 +136,5 @@ public class User implements UserDetails{
                     ", roles=" + roles +
                     '}';
         }
-    
+
 }
