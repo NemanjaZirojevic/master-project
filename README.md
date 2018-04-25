@@ -7,6 +7,9 @@ Reactive Spring Boot + Spring Security + MongoDB + MySQL + Hibernate + Thymeleaf
 Za pokretanje aplikacije neophodno je pokretanje instance MongoDB i MySQL baze sa korisnickim privilegijama definisanim 
 u application.properties fajlu.
 ## Izgled stranice za logovanje
+![login](https://user-images.githubusercontent.com/35013838/39249233-7ac00058-489e-11e8-9ca4-b926e69e6b0a.png)
+## Izgled stranice za registraciju novih korisnika
+## izgled pocetne stranice
 
 
 
