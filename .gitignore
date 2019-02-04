@@ -22,7 +22,7 @@ journal
 *.pdf
 *.docx
 *.lock
-data-mongodb/mongod.lock
+
 
 ### NetBeans ###
              nbproject/private/
@@ -31,4 +31,3 @@ data-mongodb/mongod.lock
              dist/
              nbdist/
              .nb-gradle/
- data-mongodb/mongod.lock

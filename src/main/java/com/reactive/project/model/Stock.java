@@ -3,7 +3,6 @@ package com.reactive.project.model;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.util.Date;
 
 
 @Document
@@ -51,5 +50,14 @@ public class Stock {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    @Override
+    public String toString() {
+        return "Stock{" +
+                "id='" + id + '\'' +
+                ", price=" + price +
+                ", name='" + name + '\'' +
+                '}';
     }
 }

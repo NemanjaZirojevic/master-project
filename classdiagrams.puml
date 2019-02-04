@@ -1,0 +1,88 @@
+@startuml
+
+
+interface StockRepository
+interface UserRepository
+interface UserService
+interface UserDetails
+interface JpaRepository
+interface ReactiveMongoRepository
+class WebSecurityConfigurerAdapter
+class SecurityConfig{
+# void configure(HttpSecurity http)
++ DaoAuthenticationProvider authenticationProvider()
+# void configure(AuthenticationManagerBuilder auth)
+}
+class RestRequestsController{
++  Flux<StockEvent> getStockPrice(String stockId)
++ UserWrapper findAllUsers()
++ void deleteUser(User user)
+}
+class PageController{
++ ModelAndView registration()
++ ModelAndView root()
++ ModelAndView getAllUsers()
++ ModelAndView login(Model model)
++ String userIndex()
++ ModelAndView displayStockDetails(int id)
+}
+class UserRegistrationController{
++ String registerUserAccount(UserRegistrationDto userDto,BindingResult result)
++ String showRegistrationForm(Model model)
++ UserRegistrationDto userRegistrationDto()
+
+}
+class Stock{
+ - String id
+ - int price
+ - String name
+}
+class StockEvent{
+- int stockPrice
+
+}
+class UserServiceImpl{
++ UserDetails loadUserByUsername(String email)
++ User findByEmail(String email)
++ User save(UserRegistrationDto registration)
++ List<User> findAll()
++ User save(UserRegistrationDto registration
++ void delete(User user)
+
+}
+Class User {
+- Long id
+- String firstName
+- String lastName
+- String email
+- String password
+}
+Class Account {
+- Long id
+- String sum
+
+}
+Class Role{
+- Long id
+- String name
+}
+
+
+JpaRepository <|-- UserRepository : "<<extends>>"
+User o-- "1" Account
+User "1..*" *-- "many" Role : "1..*"
+UserDetails <|-- User
+UserService <|-- UserServiceImpl
+WebSecurityConfigurerAdapter <|-- SecurityConfig : "<<extends>>"
+ReactiveMongoRepository <|-- StockRepository :"<<extends>>"
+UserServiceImpl  -- UserRepository :"<<inject>>"
+UserRegistrationController -- UserService : "<<inject>>"
+RestRequestsController -- StockRepository : "<<inject>>"
+RestRequestsController -- UserService : "<<inject>>"
+PageController -- StockRepository : "<<inject>>"
+SecurityConfig -- UserService : "<<inject>>"
+
+
+
+
+@enduml

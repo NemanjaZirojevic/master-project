@@ -1,6 +1,8 @@
 <!DOCTYPE html>
-<html lang="en">
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
 
 <link>
   <meta charset="utf-8">
@@ -8,7 +10,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <meta name="description" content="">
   <meta name="author" content="">
-  <title>RAF berza</title>
+  <title th:text="#{main.tittle}"></title>
   <link rel="icon"  sizes="32x32" href="images/stock-exchange.ico"></link>
   <!-- Bootstrap core CSS-->
   <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
@@ -19,9 +21,57 @@
   <!-- Custom styles for this template-->
   <link href="css/sb-admin.css" rel="stylesheet">
 
+<style>
+  #userAdministration{
+    color: antiquewhite;
+    margin-right: 10px;
+    cursor:pointer;
+  }
+  #companyAdministration{
+    color: antiquewhite;
+    margin-right: 10px;
+    cursor:pointer;
+
+  }
+  #statistics{
+    color: antiquewhite;
+    margin-right: 10px;
+    cursor:pointer;
+  }
+  #languageSelection{
+    color: antiquewhite;
+  }
+  #userName{
+    color: antiquewhite;
+    margin-right: 10px;
+    cursor:pointer;
+  }
+  #logout{
+    color: antiquewhite;
+  }
+  #logout:hover{
+    color: white;
+  }
+  #statistics:hover
+  {
+    color: white;
+    text-decoration: underline;
+  }
+  #companyAdministration:hover
+  {
+    color: white;
+    text-decoration: underline;
+  }
+  #userAdministration:hover{
+    color: white;
+    text-decoration: underline;
+  }
+</style>
+
 </head>
 
 <body class="fixed-nav sticky-footer bg-dark" id="page-top">
+
   <!-- Navigation-->
   <div id="popup" style="left: 424.5px; position: absolute; top: 200px; z-index: 9999; opacity: 0; display: none;">
     <span class="button b-close"><span>X</span></span>
@@ -30,15 +80,29 @@
 
   <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top" id="mainNav">
     <a class="navbar-brand" href="#"><img src="images/logo.png" style="height: 40px"></a>
+    <a id="userAdministration"  sec:authorize="hasRole('ROLE_ADMIN')" th:text="#{main.useradministration}" th:href="@{userAdministration}"></a>
+    <a id="companyAdministration" sec:authorize="hasRole('ROLE_ADMIN')" th:text="#{main.companyadministration}" th:href="@{companiesAdministration}"></a>
+    <a id="statistics" sec:authorize="hasRole('ROLE_ADMIN')" th:text="#{main.statistics}" th:href="@{statisticsAdministration}"></a>
+    <a id="userName"   href="#" style="cursor: default;font-size: 14px;position: absolute;right:0;color: antiquewhite;" disabled="true">
+        <label th:text="#{welcomeUser}"></label> <span  style="font-weight: bold" th:text ="${#authentication.getPrincipal().getUsername()}"></span>
+    </a>
+      <a id="logout" class="nav-link" data-toggle="modal" data-target="#exampleModal" href="#" style="cursor: pointer;font-size: 14px;position: absolute;right:18%">
+        <i class="fa fa-fw fa-sign-out"></i><label style="cursor: pointer" th:text="#{logout}"></label>
+      </a>
+    <span id="languageSelection" th:text="#{lang.change}"></span>:
+    <select id="locales">
+      <option value=""></option>
+      <option value="en" th:text="#{lang.eng}"></option>
+      <option value="sr" th:text="#{lang.sr}"></option>
+    </select>
     <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarResponsive">
-      <ul class="navbar-nav navbar-sidenav" id="exampleAccordion" >
-
+      <ul class="navbar-nav navbar-sidenav" id="exampleAccordion"  sec:authorize="hasRole('ROLE_USER')">
         <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Components">
           <a class="nav-link nav-link-collapse collapsed" data-toggle="collapse" href="#collapseComponents" data-parent="#exampleAccordion">
-            <span class="nav-link-text">Akcije</span>
+            <span class="nav-link-text" th:text="#{stocks}"></span>
           </a>
           <ul class="sidenav-second-level collapse" id="collapseComponents" style="text-align: center">
             <li style="padding-bottom: 10px">
@@ -69,13 +133,10 @@
                 <i class="fa fa-area-chart"></i>
               </div>
               <div class="mr-5">
-                <label for="input-value">Unesite predvidjenu vrednost akcija : </label>
+                <label for="input-value" th:text="#{enter.stock.price}"></label>
                 <input id="input-value" class="form-control">
               </div>
             </div>
-            <!--<a class="card-footer text-white clearfix small z-1" href="#">-->
-              <!--<button class="btn btn-success">Ulozi</button>-->
-            <!--</a>-->
           </div>
         </div>
         <div class="col-xl-3 col-sm-6 mb-3">
@@ -85,7 +146,7 @@
                 <i class="fa fa-hourglass-1"></i>
               </div>
               <div class="mr-5">
-                <label for="input-time">Unesite vremenski period (u sekundama):</label>
+                <label for="input-time" th:text="#{enter.time.seconds}"></label>
                 <input id="input-time" class="form-control">
               </div>
             </div>
@@ -99,30 +160,35 @@
                 <i class="fa fa-money"></i>
               </div>
               <div class="mr-5">
-                <label for="input-money">Unesite sumu koju ulazete : </label>
+                <label th:text="#{userSum}"></label>
+                <label id="availableSum" th:value="${avaiableSum}" th:text="${sum}"></label>
+                <label for="input-money" th:text="#{enter.sum}"></label>
                 <input id="input-money" class="form-control">
               </div>
             </div>
             <div class="card-footer text-white clearfix small z-1">
-              <button class="btn btn-primary" id="addLine">Uloži</button>
+              <button class="btn btn-primary" id="addLine" th:text="#{invest}"></button>
             </div>
           </div>
         </div>
       </div>
-      <!-- Area Chart Example-->
+
       <div class="card mb-3">
-        <div class="card-header">
+        <div class="card-header"><label th:text="#{graph.text}"></label>
           <i class="fa fa-area-chart"></i>
-          Grafikon vrednosti akcija : <label id="stockName" style="font-weight: bold"></label></div>
+          <label id="stockName" style="font-weight: bold"></label></div>
         <div class="card-body">
           <h1>
-            Vrednost akcija : <span id="priceHolder"></span>
+            <label th:text="#{stock.value}"></label>
+            <span id="priceHolder"></span>
           </h1>
           <div id="placeholder" style="width: 100%; height: 300px; margin: 0 auto"></div>
         </div>
       </div>
-      </div>
     </div>
+  </div>
+
+
 
     <footer class="sticky-footer">
       <div class="container">
@@ -136,23 +202,24 @@
       <i class="fa fa-angle-up"></i>
     </a>
     <!-- Logout Modal-->
-    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-      <div class="modal-dialog" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
-            <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">×</span>
-            </button>
-          </div>
-          <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
-          <div class="modal-footer">
-            <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-            <a class="btn btn-primary" href="login.html">Logout</a>
-          </div>
+  <!-- Logout Modal-->
+  <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel" th:text="#{logoutTittle}"></h5>
+          <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">×</span>
+          </button>
+        </div>
+        <div class="modal-body" th:text="#{logoutText}"></div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" type="button" data-dismiss="modal" th:text="#{cancel}"></button>
+          <a class="btn btn-primary" th:href="@{logout}" th:text="#{logout}"></a>
         </div>
       </div>
     </div>
+  </div>
     <!-- Bootstrap core JavaScript-->
     <script src="vendor/jquery/jquery.min.js"></script>
     <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
@@ -165,13 +232,15 @@
     <!-- Custom scripts for all pages-->
     <script src="js/sb-admin.min.js"></script>
     <!-- Custom scripts for this page-->
-    <script src="js/sb-admin-datatables.min.js"></script>
-    <script src="js/sb-admin-charts.min.js"></script>
+    <!--<script src="js/sb-admin-datatables.min.js"></script>-->
+    <!--<script src="js/sb-admin-charts.min.js"></script>-->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/flot/0.8.3/jquery.flot.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/flot/0.8.3/jquery.flot.resize.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/flot/0.8.3/jquery.flot.pie.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/flot/0.8.3/jquery.flot.categories.min.js"></script>
+  <link th:href="@{css/sweetalert2.css}" rel="stylesheet">
+  <script th:src="@{js/sweetalert2.min.js}"></script>
 
 
 
@@ -185,8 +254,6 @@
           var optionsChanged = 0;
           var plot;
           var count = 0;
-
-
 
           var options = {
               grid: {
@@ -270,7 +337,6 @@
           }
           if(optionsChanged==2)
           {
-
               var options = plot.getOptions();
               options.grid.markings=[];
               plot.options = options;
@@ -318,13 +384,9 @@
           // setup plot
           plot = $.plot($("#placeholder"), [initData()], options);
 
-
-
-
           function update(data)
           {
               count++;
-              console.log("Displaying count number : "+ count);
               $('#priceHolder').text('$' + data);
               plot.setData([getData(data)]);
               plot.draw();
@@ -334,17 +396,36 @@
 
           var button = document.querySelector('#addLine');
           button.addEventListener('click',function () {
-              optionsChanged = 1;
-              count = 0;
+              var availableAmount = $("#availableSum").attr("value");
+              var moneyInput = $("#input-money").val().trim();
+              var available = parseInt(availableAmount, 10);
+              var inputed = parseInt(moneyInput,10);
+              if(inputed>available)
+              {
+                  swal({
+                      title: 'Greška!',
+                      text: "Nemate dovoljan iznos na računu, \n unesite manji iznos pa pokušajte ponovo!",
+                      type: 'error',
+                      allowOutsideClick: false,
+                      showCancelButton: false,
+                      confirmButtonColor: '#3085d6',
+                      confirmButtonText: 'Potvrdi',
+                      confirmButtonClass: 'btn btn-primary',
+                      buttonsStyling: true,
+                      reverseButtons: true
+                  });
+                  return ;
+              }else {
+
+                  optionsChanged = 1;
+                  count = 0;
+              }
 
           });
 
-
           function reset(stockPrice,time)
           {
-
               var inputValue = $("#input-value").val().trim();
-
               if(count == time)
               {
                   if (stockPrice < inputValue) {
@@ -367,9 +448,19 @@
                   }
 
               }
-
           }
       };
+  </script>
+
+  <script type="text/javascript">
+      $(document).ready(function() {
+          $("#locales").change(function () {
+              var selectedOption = $('#locales').val();
+              if (selectedOption != ''){
+                  window.location.replace('/?lang=' + selectedOption);
+              }
+          });
+      });
   </script>
 
   </div>

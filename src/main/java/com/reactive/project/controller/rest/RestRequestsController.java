@@ -1,17 +1,23 @@
 package com.reactive.project.controller.rest;
 
 
-import com.reactive.project.model.StockEvent;
+import com.reactive.project.domain.Account;
+import com.reactive.project.domain.User;
+import com.reactive.project.domain.UserRegistrationDto;
+import com.reactive.project.domain.UserWrapper;
 import com.reactive.project.repository.StockRepository;
+import com.reactive.project.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.actuate.endpoint.MetricsEndpoint;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
-import org.springframework.http.MediaType;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
-import reactor.core.publisher.Flux;
-import reactor.util.function.Tuple2;
-import java.time.Duration;
-import java.util.Random;
-import java.util.stream.Stream;
+
+
+import javax.validation.Valid;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 
 @EnableMongoRepositories
@@ -19,23 +25,65 @@ import java.util.stream.Stream;
 @RequestMapping("/rest")
 public class RestRequestsController {
 
-
+    @Autowired
+    MetricsEndpoint metricsEndpoint;
 
     @Autowired
-    StockRepository stockRepository;
+    UserService userService;
 
-
-
-    @RequestMapping(value = "/stock/events/{stockId}",method = RequestMethod.GET, produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-    Flux<StockEvent> getStockPrice(@PathVariable("stockId") String stockId)
+    @Secured("ROLE_ADMIN")
+    @RequestMapping(value = "statistics",method = RequestMethod.GET)
+    public Map<String, Object> metrics()
     {
-        Random rand = new Random();
-        return stockRepository.findById(stockId)
-                           .flatMapMany(stock -> {
-                            Flux<Long> interval = Flux.interval(Duration.ofSeconds(2));
-                            Flux<StockEvent> stockEventFlux = Flux.fromStream(Stream.generate(()-> new StockEvent(stock,rand.nextInt(98) + 1)));
-                            return Flux.zip(interval,stockEventFlux).map(Tuple2::getT2);
-                        });
-    };
+        return metricsEndpoint.invoke();
+    }
+
+    @Secured("ROLE_ADMIN")
+    @RequestMapping(value = "/findAllUsers",method = RequestMethod.GET)
+    public UserWrapper findAllUsers()
+    {
+       List <User> users = userService.findAll();
+        UserWrapper userWrapper = new UserWrapper();
+        userWrapper.setData(users);
+       return userWrapper;
+    }
+
+    @Secured("ROLE_ADMIN")
+    @RequestMapping(value="/deleteUser",method = RequestMethod.DELETE)
+    public void deleteUser(@RequestBody User user)
+    {
+        userService.delete(user);
+    }
+
+
+    @Secured("ROLE_ADMIN")
+    @RequestMapping(value = "/updateUsers",method = RequestMethod.POST)
+    public void updateUser(@RequestBody User user)
+    {
+
+        userService.save(user);
+    }
+
+
+    @Secured("ROLE_ADMIN")
+    @RequestMapping(value = "/addUser",method = RequestMethod.POST)
+    public void addNewUser(@RequestBody UserRegistrationDto userDto)
+    {
+        System.out.println(userDto);
+
+        userService.save(userDto);
+    }
+
+    @RequestMapping(value = "/get/user/{id}",method = RequestMethod.GET)
+    public Account getUserById(@PathVariable("id")Long id)
+    {
+        Optional<User> user = userService.findById(id);
+        User current = null;
+        if(user!=null)
+        {
+            current = user.get();
+        }
+        return current.getAccount();
+    }
 
 }

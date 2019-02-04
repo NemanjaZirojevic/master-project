@@ -4,7 +4,6 @@
     <meta charset="utf-8"/>
     <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
-    <link rel="icon"  sizes="32x32" href="images/stock-exchange.ico"></link>
     <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/3.3.7/css/bootstrap.min.css}"/>
     <link rel="stylesheet" type="text/css" th:href="@{/css/main.css}"/>
 
@@ -89,6 +88,17 @@
                            th:field="*{confirmPassword}"/>
                     <p class="error-message"
                        th:each="error : ${#fields.errors('confirmPassword')}"
+                       th:text="${error}">Validation error</p>
+                </div>
+                <div class="form-group"
+                     th:classappend="${#fields.hasErrors('sum')}? 'has-error':''">
+                    <label for="sum" class="control-label">Sum to invest</label>
+                    <input id="sum"
+                           class="form-control"
+                           type="text"
+                           th:field="*{sum}"/>
+                    <p class="error-message"
+                       th:each="error : ${#fields.errors('sum')}"
                        th:text="${error}">Validation error</p>
                 </div>
                 <div class="form-group"

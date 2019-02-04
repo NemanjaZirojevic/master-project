@@ -3,28 +3,40 @@ package com.reactive.project.domain;
 
 
 import javax.persistence.Id;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.stream.Collectors;
 import javax.persistence.*;
 
 @Entity
 @Table(uniqueConstraints = @UniqueConstraint(columnNames = "email"))
+@JsonPropertyOrder({ "id", "name", "lastname", "email" })
 public class User implements UserDetails{
 
         @Id
         @GeneratedValue(strategy = GenerationType.AUTO)
         private Long id;
 
+        @JsonProperty("name")
         private String firstName;
+
+        @JsonProperty("lastname")
         private String lastName;
+
+        @JsonProperty("email")
         private String email;
+
+        @JsonProperty("password")
         private String password;
 
+        @JsonIgnore
         @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
         @JoinTable(
                 name = "users_roles",
@@ -34,7 +46,23 @@ public class User implements UserDetails{
                         name = "role_id", referencedColumnName = "id"))
         private Collection<Role> roles;
 
-        public User() {
+
+       @JsonIgnore
+       @OneToOne(fetch = FetchType.LAZY,
+            cascade =  CascadeType.ALL,
+            mappedBy = "user")
+       private Account account;
+
+
+        public Account getAccount() {
+        return account;
+        }
+
+        public void setAccount(Account account) {
+        this.account = account;
+       }
+
+    public User() {
         }
 
         public User(String firstName, String lastName, String email, String password, Collection<Role> roles) {

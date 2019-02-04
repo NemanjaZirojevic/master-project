@@ -1,0 +1,24 @@
+@startuml
+left to right direction
+skinparam packageStyle rectangle
+actor user
+actor admin
+rectangle Application {
+ user -- (login)
+  user -- (сhoose company)
+  user -- (invest money)
+
+
+
+
+   (invest money) .> (сhoose company)
+    (сhoose company) .> (login) : include
+
+
+
+  (Administrate users) -- admin
+  (Administrate companies in system) -- admin
+  (Administrate users) .> (login) : include
+  (Administrate companies in system) .> login : include
+}
+@enduml

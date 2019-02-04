@@ -3,6 +3,7 @@ import com.reactive.project.constrait.FieldMatch;
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotEmpty;
 import javax.validation.constraints.AssertTrue;
+import javax.validation.constraints.Min;
 
 @FieldMatch.List({
         @FieldMatch(first = "password", second = "confirmPassword", message = "The password fields must match"),
@@ -29,6 +30,9 @@ public class UserRegistrationDto {
     @Email
     @NotEmpty
     private String confirmEmail;
+
+    @Min(value = 200,message = "Minimum amount must be greater than 200")
+    private int sum;
 
     @AssertTrue
     private Boolean terms;
@@ -89,4 +93,11 @@ public class UserRegistrationDto {
         this.terms = terms;
     }
 
+    public int getSum() {
+        return sum;
+    }
+
+    public void setSum(int sum) {
+        this.sum = sum;
+    }
 }

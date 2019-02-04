@@ -10,9 +10,21 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.Optional;
+
+
 public interface UserService extends UserDetailsService {
 
     User findByEmail(String email);
 
     User save(UserRegistrationDto registration);
+
+    List<User> findAll();
+
+     void delete(User user);
+
+     User save(User user);
+
+    Optional<User> findById(Long id);
 }

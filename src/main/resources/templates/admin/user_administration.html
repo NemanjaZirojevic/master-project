@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+
+<link>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="description" content="">
+<meta name="author" content="">
+<meta name="_csrf" th:content="${_csrf.token}"/>
+<meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+<title th:text="#{main.tittle}"></title>
+<link rel="icon"  sizes="32x32" href="images/stock-exchange.ico"></link>
+<!-- Bootstrap core CSS-->
+<link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+<!-- Custom fonts for this template-->
+<link href="vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+<!-- Page level plugin CSS-->
+<link href="vendor/datatables/dataTables.bootstrap4.css" rel="stylesheet">
+<!-- Custom styles for this template-->
+<link href="css/sb-admin.css" rel="stylesheet">
+
+<style>
+    #userAdministration{
+        color: antiquewhite;
+        margin-right: 10px;
+        cursor:pointer;
+    }
+    #companyAdministration{
+        color: antiquewhite;
+        margin-right: 10px;
+        cursor:pointer;
+    }
+    #statistics{
+        color: antiquewhite;
+        margin-right: 10px;
+        cursor:pointer;
+    }
+    #languageSelection{
+        color: antiquewhite;
+    }
+    #userName{
+        color: antiquewhite;
+        margin-right: 10px;
+        cursor:pointer;
+    }
+    #logout{
+        color: antiquewhite;
+    }
+    #logout:hover{
+        color: white;
+    }
+    #statistics:hover
+        {
+        color: white;
+        text-decoration: underline;
+        }
+    #companyAdministration:hover
+    {
+        color: white;
+        text-decoration: underline;
+    }
+    #userAdministration:hover{
+        color: white;
+        text-decoration: underline;
+    }
+</style>
+
+</head>
+
+<body class="fixed-nav sticky-footer bg-dark" id="page-top">
+
+<!-- Navigation-->
+<div id="popup" style="left: 424.5px; position: absolute; top: 200px; z-index: 9999; opacity: 0; display: none;">
+    <span class="button b-close"><span>X</span></span>
+    If you can't get it up use<br><span class="logo">bPopup</span>
+</div>
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top" id="mainNav">
+    <a class="navbar-brand" href="#"><img src="images/logo.png" style="height: 40px"></a>
+    <a id="userAdministration" sec:authorize="hasRole('ROLE_ADMIN')" th:text="#{main.useradministration}" th:href="@{userAdministration}"></a>
+    <a id="companyAdministration" sec:authorize="hasRole('ROLE_ADMIN')" th:text="#{main.companyadministration}" th:href="@{companiesAdministration}"></a>
+    <a id="statistics" sec:authorize="hasRole('ROLE_ADMIN')" th:text="#{main.statistics}" th:href="@{statisticsAdministration}"></a>
+    <a id="userName"   href="#" style="cursor: default;font-size: 14px;position: absolute;right:0;color: antiquewhite;" disabled="true">
+        <label th:text="#{welcomeUser}"></label> <span  style="font-weight: bold" th:text ="${#authentication.getPrincipal().getUsername()}"></span>
+    </a>
+    <a id="logout" class="nav-link" data-toggle="modal" data-target="#exampleModal" href="#" style="cursor: pointer;font-size: 14px;position: absolute;right:18%">
+        <i class="fa fa-fw fa-sign-out"></i><label style="cursor: pointer" th:text="#{logout}"></label>
+    </a>
+    <span id="languageSelection" th:text="#{lang.change}"></span>:
+    <select id="locales">
+        <option value=""></option>
+        <option value="en" th:text="#{lang.eng}"></option>
+        <option value="sr" th:text="#{lang.sr}"></option>
+    </select>
+    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+</nav>
+<div class="content-wrapper">
+    <div class="container-fluid">
+        <div class="card mb-3">
+            <div class="card-header"><label th:text="#{users.text}"></label>
+                <i class="fa fa-user"></i>
+            </div>
+            <div class="card-body">
+                <div id="placeholder" style="width: 100%; height: 300px; margin: 0 auto">
+                <form id="frm-example">
+                    <table id="userDetailsTable" class="display select" cellspacing="0" width="100%" >
+                        <thead>
+                        <tr>
+                            <th th:text="#{username}"></th>
+                            <th th:text="#{lastname}"></th>
+                            <th th:text="#{email}"></th>
+                            <th th:text="#{password}"></th>
+                            <th></th>
+                        </tr>
+                        </thead>
+                        <tfoot>
+                        <tr>
+                            <th th:text="#{username}"></th>
+                            <th th:text="#{lastname}"></th>
+                            <th th:text="#{email}"></th>
+                            <th th:text="#{password}"></th>
+                            <th></th>
+                        </tr>
+                        </tr>
+                        </tfoot>
+                    </table>
+                </form>
+                </div>
+            </div>
+            <button class="btn btn-primary" th:text="#{addUser}" id="openAddingModal" style="margin-top: 20px;margin-left: 20px;margin-bottom: 20px;width: 150px"></button>
+        </div>
+    </div>
+</div>
+
+
+
+<footer class="sticky-footer">
+    <div class="container">
+        <div class="text-center">
+            <small>Copyright © RAF 2018</small>
+        </div>
+    </div>
+</footer>
+<!-- Scroll to Top Button-->
+<a class="scroll-to-top rounded" href="#page-top">
+    <i class="fa fa-angle-up"></i>
+</a>
+<!-- Logout Modal-->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel" th:text="#{logoutTittle}"></h5>
+                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body" th:text="#{logoutText}"></div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" type="button" data-dismiss="modal" th:text="#{cancel}"></button>
+                <a class="btn btn-primary" th:href="@{logout}" th:text="#{logout}"></a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- dijalog za izmenu detalja korisnika -->
+<div class="modal fade" id="privilegeChange" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header" style="background: red;">
+                <h5 class="modal-title" id="exampleModalLabel1" th:text="#{userDetailsPreview}"></h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="form-group">
+                        <label for="userNameInput" class="form-control-label" th:text="#{username}"></label>
+                        <input type="text" class="form-control" id="userNameInput"></input>
+                        <input type="text" class="form-control" id="userId" style="display: none"></input>
+                    </div>
+                    <div class="form-group">
+                        <label for="userLastNameInput" class="form-control-label" th:text="#{lastname}"></label>
+                        <input type="text" class="form-control" id="userLastNameInput"></input>
+                        <input type="text" class="form-control" id="authorities" style="display: none"></input>
+                    </div>
+                    <div class="form-group">
+                        <label for="userEmailInput" class="form-control-label" th:text="#{userEmail}"></label>
+                        <input id="userEmailInput" type="text" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label for="userStatusInput" class="form-control-label" th:text="#{userStatus}"></label>
+                        <input id="userStatusInput" disabled="true">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="close" class="btn btn-secondary" data-dismiss="modal" th:text="#{close}"></button>
+                <button type="button" id="saveChanges" class="btn btn-primary" th:text="#{saveChanges}"></button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- dijalog za dodavanje korisnika -->
+<div class="modal fade" id="addUserModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header" style="background: red;">
+                <h5 class="modal-title" id="exampleModalLabel12" th:text="#{addUser}"></h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="form-group">
+                        <label for="userNameInput" class="form-control-label" th:text="#{username}"></label>
+                        <input type="text" class="form-control" id="newUserFirstName"></input>
+                    </div>
+                    <div class="form-group">
+                        <label for="userLastNameInput" class="form-control-label" th:text="#{lastname}"></label>
+                        <input type="text" class="form-control" id="newUserLastName"></input>
+                    </div>
+                    <div class="form-group">
+                        <label for="newUserPassword" class="form-control-label" th:text="#{password}"></label>
+                        <input id="newUserPassword" type="text" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label for="newUserConfirmPassword" class="form-control-label" th:text="#{confirmPassword}"></label>
+                        <input id="newUserConfirmPassword" type="text" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label for="newUserEmail" class="form-control-label" th:text="#{email}"></label>
+                        <input id="newUserEmail" type="text" class="form-control">
+                    </div>
+                    <div class="form-group">
+                      <label for="newUserConfirmEmail" class="form-control-label" th:text="#{confirmEmail}"></label>
+                      <input id="newUserConfirmEmail" type="text" class="form-control">
+                   </div>
+                    <div class="form-group">
+                        <input id="terms"
+                               type="checkbox">
+                        <label class="control-label" for="terms">
+                            I agree with the <a href="#">terms and conditions</a> for Registration.
+                        </label>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="addUserClose" class="btn btn-secondary" data-dismiss="modal" th:text="#{close}"></button>
+                <button type="button" id="addUser" class="btn btn-primary" th:text="#{saveChanges}"></button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<link th:href="@{css/sweetalert2.css}" rel="stylesheet">
+<script th:src="@{js/jquery-1.11.3.min.js}"></script>
+<script th:src="@{vendor/bootstrap/js/bootstrap.bundle.min.js}"></script>
+<script th:src="@{vendor/datatables/jquery.dataTables.js}"></script>
+<script th:src="@{js/sweetalert2.min.js}"></script>
+<script th:src="@{js/adminstrationcontroller.js}"></script>
+
+<script type="text/javascript">
+    $(document).ready(function() {
+        $("#locales").change(function () {
+            var selectedOption = $('#locales').val();
+            if (selectedOption != ''){
+                window.location.replace('/?lang=' + selectedOption);
+            }
+        });
+    });
+</script>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,828 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<meta http-equiv="X-UA-Compatible" content="IE=10">
+<meta name="_csrf" th:content="${_csrf.token}"/>
+<meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+<head>
+
+
+
+    <!-- Datatables css-->
+
+    <link th:href="@{css/datatables-min.css}" rel="stylesheet"/>
+    <link th:href="@{css/datatables.checkboxes.css}" rel="stylesheet"/>
+
+    <!-- spinner css-->
+
+    <link th:href="@{css/loading.css}" rel="stylesheet" >
+    <link th:href="@{css/css-loader.css}" rel="stylesheet">
+
+    <link  th:href="@{css/bootstrap-iso.css}" rel="stylesheet">
+    <link  th:href="@{css/bootstrap-datetimepicker-1.4.1.css}" rel="stylesheet">
+    <link  th:href="@{css/bootstrap-iso.css}" rel="stylesheet"/>
+    <link  th:href="@{css/sweetalert.css}" rel="stylesheet">
+
+    <link rel="icon"  sizes="32x32" href="images/stock-exchange.ico"></link>
+    <!-- Bootstrap core CSS-->
+    <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom fonts for this template-->
+    <link href="vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <!-- Page level plugin CSS-->
+    <link href="vendor/datatables/dataTables.bootstrap4.css" rel="stylesheet">
+    <!-- Custom styles for this template-->
+    <link href="css/sb-admin.css" rel="stylesheet">
+
+</head>
+<style>
+    .relative{position:relative; width:600px;}
+    .absolute-text{position:absolute; bottom:0; font-size:24px; font-family:"vedana"; background:rgba(251,251,251,0.5);
+        padding:10px 20px; width:100%; text-align:center;}
+    .absolute-text a{font-size:16px; color:#b92b27;}
+</style>
+<body class="fixed-nav sticky-footer bg-dark" id="page-top">
+<!-- Navigation-->
+<div id="popup" style="left: 424.5px; position: absolute; top: 200px; z-index: 9999; opacity: 0; display: none;">
+    <span class="button b-close"><span>X</span></span>
+    If you can't get it up use<br><span class="logo">bPopup</span>
+</div>
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top" id="mainNav">
+    <a class="navbar-brand" href="#"><img src="images/logo.png" style="height: 40px"></a>
+    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+
+</nav>
+<div class="content-wrapper">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-xl-3 col-sm-6 mb-3">
+                <div class="card text-white bg-primary o-hidden h-100">
+                    <div class="card-body">
+                        <div class="card-body-icon">
+                            <i class="fa fa-area-chart"></i>
+                        </div>
+                        <div class="mr-5">
+                            <label for="findUser">Prikazi registrovane korisnike : </label>
+                            <button id="findUser" class="btn btn-warning">Prikaži</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Area Chart Example-->
+        <div class="card mb-3">
+
+            <div class="card-body">
+
+                <form id="frm-example">
+                    <table id="userDetailsTable" class="display select" cellspacing="0" width="100%" >
+                        <thead>
+
+                        <tr>
+                            <th th:text="#{userId}"></th>
+                            <th th:text="#{userName}"></th>
+                            <th th:text="#{userFullName}"></th>
+                            <th th:text="#{userStatus}"></th>
+
+                            <!--<th th:text="#{action}"></th>-->
+
+                        </tr>
+
+                        </thead>
+                        <tfoot>
+                        <tr>
+                            <th th:text="#{userId}"></th>
+                            <th th:text="#{userName}"></th>
+                            <th th:text="#{userFullName}"></th>
+                            <th th:text="#{userStatus}"></th>
+
+
+                            <!--<th th:text="#{action}"></th>-->
+
+
+                        </tr>
+                        </tr>
+                        </tfoot>
+                    </table>
+                </form>
+
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<footer class="sticky-footer">
+    <div class="container">
+        <div class="text-center">
+            <small>Copyright © RAF 2018</small>
+        </div>
+    </div>
+</footer>
+<!-- Scroll to Top Button-->
+<a class="scroll-to-top rounded" href="#page-top">
+    <i class="fa fa-angle-up"></i>
+</a>
+<!-- Logout Modal-->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
+                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+                <a class="btn btn-primary" href="login.html">Logout</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<!-- Bootstrap core JavaScript-->
+<script src="vendor/jquery/jquery.min.js"></script>
+<script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+<!-- Core plugin JavaScript-->
+<script src="vendor/jquery-easing/jquery.easing.min.js"></script>
+<!-- Page level plugin JavaScript-->
+<script src="vendor/chart.js/Chart.min.js"></script>
+<script src="vendor/datatables/jquery.dataTables.js"></script>
+<script src="vendor/datatables/dataTables.bootstrap4.js"></script>
+<!-- Custom scripts for all pages-->
+<script src="js/sb-admin.min.js"></script>
+<!-- Custom scripts for this page-->
+<script src="js/sb-admin-datatables.min.js"></script>
+<script src="js/sb-admin-charts.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/flot/0.8.3/jquery.flot.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/flot/0.8.3/jquery.flot.resize.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/flot/0.8.3/jquery.flot.pie.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/flot/0.8.3/jquery.flot.categories.min.js"></script>
+
+
+
+
+
+<script type="text/javascript">
+
+
+        var token = $("meta[name='_csrf']").attr("content");
+        var header = $("meta[name='_csrf_header']").attr("content");
+
+
+
+    <!--creating table for displaying users-->
+
+    var table=null;
+
+    var userNameAndLastNameForSearch = null;
+    var userNameForSearch = null;
+
+    var institutionList = null;
+    var privilegeLevel = null;
+
+    var searchForm = new Object(null);
+
+
+    var token = $("meta[name='_csrf']").attr("content");
+    var header = $("meta[name='_csrf_header']").attr("content");
+
+
+    $('#findUser').on('click',function ()
+    {
+
+            if (table == null)
+            {
+//                userNameAndLastNameForSearch = $("#userNameAndLastNameSearch").val().trim();
+//
+//                userNameForSearch = $("#userNameSearch").val().trim();
+//
+//                institutionList = $("#institutionSearchList").val();
+//
+//                privilegeLevel = $("#privilegeLevelForSearch").val();
+//
+//
+//                if (userNameAndLastNameForSearch == '') {
+//                    userNameAndLastNameForSearch = null;
+//                }
+//                if (userNameForSearch == '') {
+//                    userNameForSearch = null;
+//                }
+//                if (institutionList == '') {
+//                    institutionList = null;
+//                }
+//                if (privilegeLevel == '') {
+//                    privilegeLevel = null;
+//                }
+//
+//
+//                searchForm.userNameAndLastName = userNameAndLastNameForSearch;
+//                searchForm.userName = userNameForSearch;
+//                searchForm.institutionId = institutionList;
+//                searchForm.groupId = privilegeLevel;
+
+
+                table = $('#userDetailsTable').DataTable({
+                    responsive: true,
+                    autoWidth: false,
+                    ajax:
+                        {
+                            "url": "/rest/findAllUsers",
+                            "type": "GET",
+                            "contentType": "application/json",
+                            "beforeSend": function (xhr) {
+                                xhr.setRequestHeader(header, token);
+                                $("#spinner").css('visibility', 'visible');
+                            },
+                            "complete": function (response) {
+                                $("#spinner").css('visibility', 'hidden');
+
+                            }
+
+                        },
+
+                    columns: [
+                        {data: "id"},
+                        {data: "name"},
+                        {data: "lastname"},
+                        // {
+                        //     data: "statusName",
+                        //     render: function (data, type, row) {
+                        //
+                        //         if (row.statusName == 'Aktivan') {
+                        //             return '<b style="color: #25a25a">Aktivan</b>';
+                        //         }
+                        //
+                        //         else {
+                        //
+                        //             return '<b style="color: #96281b">Nije aktivan</b>';
+                        //
+                        //         }
+                        //     }
+                        //
+                        // },
+                        {data: "email"},
+
+
+
+//                        {
+//                            data: null,
+//                            className: "center",
+//                            render: function (data, type, row) {
+//
+//                                if (row.status == 0) {
+//                                    return '<button href="" id="activate" class=" btn btn-success" type="button">Aktiviraj</button> <button id="change" href="" class="btn btn-warning" type="button">Izmeni</button>';
+//                                }
+//
+//                                else {
+//
+//                                    return '<button id="deactivate" href="" class=" btn btn-danger" type="button">Deaktiviraj</button> <button id="change" href="" class="btn btn-warning" type="button">Izmeni</button>';
+//
+//                                }
+//                            }
+//
+//                        },
+
+                    ],
+                });
+            }
+            else {
+//                userNameAndLastNameForSearch = $("#userNameAndLastNameSearch").val().trim();
+//
+//                userNameForSearch = $("#userNameSearch").val().trim();
+//
+//                institutionList = $("#institutionSearchList").val()
+//
+//                privilegeLevel = $("#privilegeLevelForSearch").val();
+//
+//
+//                if (userNameAndLastNameForSearch == '') {
+//                    userNameAndLastNameForSearch = null;
+//                }
+//                if (userNameForSearch == '') {
+//                    userNameForSearch = null;
+//                }
+//                if (institutionList == '') {
+//                    institutionList = null;
+//                }
+//                if (privilegeLevel == '') {
+//                    privilegeLevel = null;
+//                }
+//
+//                searchForm.userNameAndLastName = userNameAndLastNameForSearch;
+//                searchForm.userName = userNameForSearch;
+//                searchForm.institutionId = institutionList;
+//                searchForm.groupId = privilegeLevel;
+
+                table.ajax.reload();
+            }
+
+
+        $('#userDetailsTable tbody').on( 'click', 'button', function ()
+        {
+            var data = table.row( $(this).parents('tr') ).data();
+            var id = $(this).attr('id');
+            var institutions = data.institutionId;
+
+
+            if(id=='change')
+            {
+
+                $("#fullUserNameInput").val(data.administratorFullNameAndLastName);
+                $("#userNameInput").val(data.administratorName);
+                $("#userPasswordInput").val(data.password);
+                $("#userId").val(data.administratorId);
+                $("#userInstitutionInput").val(institutions);
+                $("#userInstitutionInput").multipleSelect("refresh");
+
+
+                if(data.status==1)
+                {
+                    $("#userStatusInput").val("Aktivan");
+
+                }
+                else
+                {
+                    $("#userStatusInput").val("Nije aktivan");
+
+                }
+
+                if(data.privilegeName=='Operater institucije')
+                {
+                    $("#userPrivilegeInput").val(1);
+
+                }
+                else if(data.privilegeName=='Administrator institucije')
+                {
+                    $("#userPrivilegeInput").val(2);
+
+                }
+                $('#privilegeChange').modal();
+            }
+            if(id=='deactivate')
+            {
+                swal({
+                    title: 'Da li ste sigurni da želite da deaktivirate korisnika?',
+                    text: "Potvrdom operacije, \n izabrani korisnik neće imati pristup portalu",
+                    type: 'warning',
+                    allowOutsideClick: false,
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Potvrdi',
+                    cancelButtonText: 'Odustani',
+                    confirmButtonClass: 'btn btn-primary',
+                    cancelButtonClass: 'btn btn-danger',
+                    buttonsStyling: true,
+                    reverseButtons: true
+                }).then(function (isConfirm)
+
+                {
+                    var confirm=isConfirm['value'];
+                    if (confirm==true)
+                    {
+                        var adminId = data.administratorId;
+                        var adminNameAndLastName = data.administratorFullNameAndLastName;
+                        var adminName = data.administratorName;
+                        var adminPassword = data.password;
+                        var adminStatus = 0 ;
+                        var adminPrivilege = data.groupId;
+
+
+
+                        var administrator = new Object(null);
+                        administrator.administratorId = adminId;
+                        administrator.administratorFullNameAndLastName = adminNameAndLastName;
+                        administrator.administratorName = adminName;
+                        administrator.password = adminPassword;
+                        administrator.groupId = adminPrivilege;
+                        administrator.status = adminStatus;
+
+
+
+                        $.ajax({
+                            url: "getAvailableInstitutionsForUser",
+                            type: "POST",
+                            beforeSend : function (xhr) {
+                                $("#spinner").css('visibility','visible');
+                                xhr.setRequestHeader(header, token);
+                            },
+                            contentType: "application/json",
+                            data: JSON.stringify(administrator),
+                            complete: function (response) {
+
+
+                                if(response.status == 200) {
+
+                                    var jsonResponse = response.responseJSON;
+                                    var institutionIdList = new Array();
+                                    jsonResponse.forEach(function (arrayItem) {
+                                        institutionIdList.push(arrayItem.institutionId);
+                                        administrator.institutionId = institutionIdList;
+                                    });
+
+                                    $.ajax({
+                                        url: "updateUserCredentials",
+                                        type: "POST",
+                                        beforeSend : function (xhr) {
+                                            xhr.setRequestHeader(header, token);
+                                        },
+                                        contentType: "application/json",
+                                        data: JSON.stringify(administrator),
+                                        success: function (response) {
+                                            $("#spinner").css('visibility','hidden');
+                                            swal({
+                                                title: 'Izmene su uspešno sačuvane!',
+                                                text: "Uspešno ste sačuvali izmene za izabranog korisnika!",
+                                                type: 'success',
+                                                showCancelButton: false,
+                                                confirmButtonColor: '#3085d6',
+                                                confirmButtonText: 'Potvrdi',
+                                                confirmButtonClass: 'btn btn-success',
+                                                buttonsStyling: true,
+                                                reverseButtons: true
+                                            });
+                                            table.ajax.reload();
+                                        },
+                                        error: function (response) {
+                                            $("#spinner").css('visibility','hidden');
+                                        }
+
+                                    })
+
+                                }
+                                else
+                                {
+                                    $("#spinner").css('visibility','hidden');
+                                    swal({
+                                        title: 'Greška!',
+                                        text: "Desila se greška prilikom izmene korisničkih prava, \n molimo pokušajte ponovo!",
+                                        type: 'error',
+                                        allowOutsideClick: false,
+                                        showCancelButton: false,
+                                        confirmButtonColor: '#3085d6',
+                                        confirmButtonText: 'Potvrdi',
+                                        confirmButtonClass: 'btn btn-primary',
+                                        buttonsStyling: false,
+                                        reverseButtons: true
+                                    });
+
+
+                                }
+
+                            },
+
+                        })
+
+                    } else
+                    {
+
+
+                    }
+                })
+            }
+
+            else if(id=="activate")
+            {
+                swal({
+                    title: 'Da li ste sigurni da želite da aktivirate korisnika?',
+                    text: "Potvrdom  operacije, \n izabrani korisnik će imati pristup portalu",
+                    type: 'warning',
+                    allowOutsideClick: false,
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Potvrdi',
+                    cancelButtonText: 'Odustani',
+                    confirmButtonClass: 'btn btn-primary',
+                    cancelButtonClass: 'btn btn-danger',
+                    buttonsStyling: true,
+                    reverseButtons: true
+                }).then(function (isConfirm)
+
+                {
+                    var confirm=isConfirm['value'];
+                    if (confirm==true)
+                    {
+                        var adminId = data.administratorId;
+                        var adminNameAndLastName = data.administratorFullNameAndLastName;
+                        var adminName = data.administratorName;
+                        var adminPassword = data.password;
+                        var adminStatus = 1 ;
+                        var adminPrivilege = data.groupId;
+
+
+
+                        var administrator = new Object(null);
+                        administrator.administratorId = adminId;
+                        administrator.administratorFullNameAndLastName = adminNameAndLastName;
+                        administrator.administratorName = adminName;
+                        administrator.password = adminPassword;
+                        administrator.groupId = adminPrivilege;
+                        administrator.status = adminStatus;
+
+
+                    } else
+                    {
+
+
+                    }
+                })
+
+            }
+
+        });
+    })
+
+    //update user creditals
+    $("#saveChanges").on('click',function () {
+
+        var adminId = $("#userId").val();
+        var adminNameAndLastName = $("#fullUserNameInput").val();
+        var adminName = $("#userNameInput").val();
+        var adminPassword = $("#userPasswordInput").val();
+        var adminStatus;
+        if($("#userStatusInput").val() == 'Aktivan')
+        {
+            adminStatus=1;
+        }
+        else
+        {
+            adminStatus = 0;
+        }
+        var adminPrivilege = $("#userPrivilegeInput").val();
+        var adminInstitution = $("#userInstitutionInput").val();
+
+        if(adminInstitution==null)
+        {
+            swal({
+                title: 'Niste izabrali instituciju!',
+                text: "Molimo izaberite institucije za administriranje, \n pa pokušajte ponovo",
+                type: 'warning',
+                showCancelButton: false,
+                confirmButtonColor: '#3085d6',
+                confirmButtonText: 'Potvrdi',
+                confirmButtonClass: 'btn btn-primary',
+                buttonsStyling: false,
+                reverseButtons: true
+            });
+
+            return;
+        }
+
+        var administrator = new Object(null);
+        // var adminInstitutionArray = new Array();
+        administrator.administratorId = adminId;
+        administrator.administratorFullNameAndLastName = adminNameAndLastName;
+        administrator.administratorName = adminName;
+        administrator.password = adminPassword;
+        administrator.groupId = adminPrivilege;
+        administrator.status = adminStatus;
+        //used for single choise ,for multiple chioises we set administrator.institutionId = adminInstitution
+//        adminInstitutionArray.push(adminInstitution);
+//        adminInstitutionArray.forEach(function (t) { console.log( "Item from array : " + t) });
+
+        administrator.institutionId = adminInstitution;
+
+
+
+        $.ajax({
+            url: "updateUserCredentials",
+            type: "POST",
+            beforeSend : function (xhr) {
+                $("#spinner").css('visibility','visible');
+                xhr.setRequestHeader(header, token);
+            },
+            contentType: "application/json",
+            data: JSON.stringify(administrator),
+            success: function (response) {
+                console.log(response);
+                $("#spinner").css('visibility','hidden');
+                $('#privilegeChange').modal('toggle');
+
+                swal({
+                    title: 'Izmene su uspešno sačuvane!',
+                    text: "Uspešno ste sačuvali izmene za izabranog korisnika!",
+                    type: 'success',
+                    showCancelButton: false,
+                    confirmButtonColor: '#3085d6',
+                    confirmButtonText: 'Potvrdi',
+                    confirmButtonClass: 'btn btn-success',
+                    buttonsStyling: false,
+                    reverseButtons: true
+                });
+                table.ajax.reload();
+            },
+            error: function (response) {
+                $("#spinner").css('visibility','hidden');
+            }
+
+        })
+    })
+
+    // add new user
+    $("#addUser").on('click',function ()
+    {
+
+        var userNameAndLastName = $("#userNameAndLastName").val().trim();
+        var userName = $("#user").val().trim();
+        var userPassword = $("#userPassword").val().trim();
+        var privilegeLevel = $("#privilegeLevelForNewUser").val();
+        var institutionList = $("#institutionList").val();
+        var confirmPassword = $("#userPasswordReenter").val().trim();
+
+
+        if(userPassword!=confirmPassword || confirmPassword=='' || confirmPassword==null)
+        {
+            swal({
+                title: 'Lozinke se ne poklapaju!',
+                text: "Molimo vas da ponovo unesete korisničku lozinku, \n pa pokušajte ponovo",
+                type: 'warning',
+                allowOutsideClick: false,
+                confirmButtonText: 'Ok',
+                confirmButtonColor: '#3085d6',
+                buttonsStyling: true,
+                confirmButtonClass: 'btn btn-primary',
+            });
+
+            return;
+        }
+
+        if(userNameAndLastName=='' || userNameAndLastName==null)
+        {
+            swal({
+                title: 'Niste uneli ime i prezime korisnika!',
+                text: "Molimo vas da unesete ime i prezime korisnika, \n pa pokušajte ponovo",
+                type: 'warning',
+                allowOutsideClick: false,
+                confirmButtonText: 'Ok',
+                confirmButtonColor: '#3085d6',
+                buttonsStyling: true,
+                confirmButtonClass: 'btn btn-primary',
+            });
+
+            return;
+
+        }
+        if(userName =='' || userName ==null)
+        {
+
+            swal({
+                title: 'Niste uneli korisničko ime!',
+                text: "Molimo vas da unesete korisničko ime, \n pa pokušajte ponovo",
+                type: 'warning',
+                allowOutsideClick: false,
+                confirmButtonText: 'Ok',
+                confirmButtonColor: '#3085d6',
+                buttonsStyling: true,
+                confirmButtonClass: 'btn btn-primary',
+            });
+
+            return;
+        }
+        if(userPassword=='' || userPassword==null)
+        {
+            swal({
+                title: 'Niste uneli lozinku za korisnika!',
+                text: "Molimo vas da unesete lozinku, \n pa pokušajte ponovo",
+                type: 'warning',
+                allowOutsideClick: false,
+                confirmButtonText: 'Ok',
+                confirmButtonColor: '#3085d6',
+                buttonsStyling: true,
+                confirmButtonClass: 'btn btn-primary',
+            });
+
+            return;
+        }
+
+        if(institutionList == '' || institutionList ==null)
+        {
+
+            swal({
+                title: 'Niste odabrali institucije vezane za korisnika !',
+                text: "Molimo vas da izaberete institucije vezane za korisnika, \n pa pokušajte ponovo",
+                type: 'warning',
+                allowOutsideClick: false,
+                confirmButtonText: 'Ok',
+                confirmButtonColor: '#3085d6',
+                buttonsStyling: true,
+                confirmButtonClass: 'btn btn-primary',
+            });
+
+            return;
+
+        }
+
+
+        var user = new Object(null);
+        user.administratorFullNameAndLastName = userNameAndLastName;
+        user.administratorName = userName;
+        user.password = userPassword;
+        user.groupId = privilegeLevel;
+        user.status = 1 ;
+        user.institutionId = institutionList;
+
+        $.ajax({
+            url: "addNewUser",
+            type: "POST",
+            beforeSend : function (xhr) {
+                $("#spinner").css('visibility','visible');
+                xhr.setRequestHeader(header, token);
+            },
+            contentType: "application/json",
+            data: JSON.stringify(user),
+            success: function (responseCode)
+            {
+                console.log("Response code : "+ responseCode);
+                if( responseCode == 0)
+                {
+                    $("#spinner").css('visibility','hidden');
+                    swal({
+                        title: 'Izmene su uspešno sacuvane!',
+                        text: "Uspešno ste sačuvali izmene za izabranog korisnika!",
+                        type: 'success',
+                        allowOutsideClick: false,
+                        showCancelButton: false,
+                        confirmButtonColor: '#3085d6',
+                        confirmButtonText: 'Potvrdi',
+                        confirmButtonClass: 'btn btn-success',
+                        buttonsStyling: true,
+                        reverseButtons: true
+                    });
+
+                    $("#userNameAndLastName").val("");
+                    $("#user").val("");
+                    $("#userPassword").val("");
+                    $("#privilegeLevelForNewUser").val(0);
+                    $("#userPasswordReenter").val("");
+                    $("#divCheckPasswordMatch").html("");
+
+
+                    if(table!=null) {
+                        table.ajax.reload();
+                    }
+
+                }
+                if( responseCode == -1)
+                {
+                    $("#spinner").css('visibility','hidden');
+                    swal({
+                        title: 'Greška!',
+                        text: "Korisnik sa unetim korisničkim imenom i lozinkom već postoji, \n molimo unesite novo korisničko i lozinku pa pokušajte ponovo!",
+                        type: 'error',
+                        allowOutsideClick: false,
+                        showCancelButton: false,
+                        confirmButtonColor: '#3085d6',
+                        confirmButtonText: 'Potvrdi',
+                        confirmButtonClass: 'btn btn-primary',
+                        buttonsStyling: true,
+                        reverseButtons: true
+                    });
+
+                }
+
+
+            },
+            error: function (response)
+            {
+                $("#spinner").css('visibility','hidden');
+                swal({
+                    title: 'Greška!',
+                    text: "Desila se greška prilikom dodavanja korisnika, \n molimo pokušajte ponovo!",
+                    type: 'error',
+                    allowOutsideClick: false,
+                    showCancelButton: false,
+                    confirmButtonColor: '#3085d6',
+                    confirmButtonText: 'Potvrdi',
+                    confirmButtonClass: 'btn btn-primary',
+                    buttonsStyling: true,
+                    reverseButtons: true
+                });
+            }
+
+        })
+
+    });
+</script>
+<link th:href="@{css/sweetalert2.css}" rel="stylesheet">
+<link th:href="@{css/multiple-select.css}" rel="stylesheet">
+<link th:href="@{css/tabbed-view.css}" rel="stylesheet">
+<script th:src="@{vendor/bootstrap/js/bootstrap.bundle.min.js}"></script>
+<script th:src="@{vendor/datatables/jquery.dataTables.js}"></script>
+<script th:src="@{js/sweetalert2.min.js}"></script>
+
+
+</div>
+</body>
+
+</html>
